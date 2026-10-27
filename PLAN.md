@@ -22,6 +22,7 @@ Written overnight on Oct 26–27 from the design discussion in the "Mos" chat, t
   - Beta-multiplier bias reference spread across corners, temperature and supply.
   - Loop design with the real K_VCO: R/C values, phase margin, I_cp trade-off and a jitter budget.
   - Behavioural closed-loop lock from a cold start at all 5 corners, using the simulated VCO curves.
+- **The dummy tile passes the full TT precheck in CI (Oct 27).** `layout/make_dummy_gds.py` draws the template pins, the VDPWR/VGND stripes and one std-cell inverter wired `ua[0]` → I, ZN → `ua[1]`. All 12 checks are green, including GF180MCU DRC and antenna ([run 40534489155](https://github.com/robertliu4/501-pll/actions/runs/40534489155)). The `viewer` job fails until GitHub Pages is enabled (§12).
 
 **Findings that changed the earlier plan**
 
@@ -52,7 +53,7 @@ Written overnight on Oct 26–27 from the design discussion in the "Mos" chat, t
 | Digital I/O | GF limits unpublished; SKY is 33 MHz out and 66 MHz in. Our outputs are ≤ 31 MHz. | [A3] |
 | Cost | €70 per tile → **2×2 = €280**; analog pins €0 right now; PCB extra | TT app config, verified |
 | Precheck | KLayout `gf180mcu.drc` (all except density and antenna), a separate antenna check, the `PR_bndry` box must exactly match the template, pins must match the DEF, LEF power pins `USE POWER/GROUND`, Yosys syntax on `src/project.v`. **No LVS.** | verified |
-| Precheck PDK | open_pdks **e8daeda** (2026-06-11), KLayout 0.30.4. Local install is 792ef67; run the final DRC against e8daeda (`ciel enable … e8daeda…`). | verified |
+| Precheck PDK | open_pdks **e8daeda** (2026-06-11), KLayout 0.30.8 (Nix, `tt-support-tools` main; `tool-versions.json` still says 0.30.4). Local install is 792ef67; run the final DRC against e8daeda (`ciel enable … e8daeda…`). | verified |
 | Files | `info.yaml`, `LICENSE`, `docs/info.md` (images < 512 kB each, < 1 MB total), `gds/<top>.gds`, `lef/<top>.lef`, `src/project.v`; top module `tt_um_*` | verified |
 
 ---
@@ -229,7 +230,7 @@ Weeks run Monday to Sunday. Exams in early December (from the chat) are why ever
 
 | Week | Dates | Work | Exit criterion |
 |---|---|---|---|
-| **W1** | Tue Oct 27 – Sun Nov 1 | 1) Install Docker (or OrbStack) and **IIC-OSIC-TOOLS 2026.10** (has xschem, magic, klayout, netgen and gf180mcuD).<br>2) Push this repo to GitHub and confirm the Actions run.<br>3) **Put a dummy layout (one inverter plus the template box, pins and power stripes) through the GitHub precheck.** This removes the biggest unknown first.<br>4) Ask on TT Discord (§12).<br>5) Redraw tonight's VCO in xschem from the ngspice netlist; reproduce the tt tuning curve.<br>6) Lay out **one VCO stage** in Magic or KLayout to learn the GF180 rules. | Precheck green on a dummy GDS; xschem VCO matches `vco_summary.txt` |
+| **W1** | Tue Oct 27 – Sun Nov 1 | 1) Install Docker (or OrbStack) and **IIC-OSIC-TOOLS 2026.10** (has xschem, magic, klayout, netgen and gf180mcuD).<br>2) ~~Push this repo to GitHub and confirm the Actions run.~~ Done Oct 27.<br>3) ~~**Put a dummy layout (one inverter plus the template box, pins and power stripes) through the GitHub precheck.**~~ **Done Oct 27: all 12 checks green.**<br>4) Ask on TT Discord (§12).<br>5) Redraw tonight's VCO in xschem from the ngspice netlist; reproduce the tt tuning curve.<br>6) Lay out **one VCO stage** in Magic or KLayout to learn the GF180 rules. | Precheck green on a dummy GDS; xschem VCO matches `vco_summary.txt` |
 | **W2** | Nov 2 – Nov 8 | VCO + V-to-I + **real bias generator** + filtered rail; corners, supply pushing, startup (Vctrl = 0, slow VDD ramp). TSPC prescaler + output buffers. Standard-cell ÷2/3/4, N select and output dividers. Control logic. | Tier 0 schematic frozen (Sat Nov 7); VCO layout started |
 | **W3** | Nov 9 – Nov 15 | PFD (dead-zone sweep, t_rst, U5/TG). Steering CP with cascodes: mismatch vs Vctrl, charge-sharing check. A1 (**3-day timebox**). Loop filter with MOS caps and poly R. **Transistor-level closed-loop lock at 5 corners** (about 5 µs transients). | **CHECKPOINT Sun Nov 15**: lock at all corners → Tier 1 is go |
 | **W4** | Nov 16 – Nov 22 | Layout: VCO (finish), prescaler, output buffers, PFD and dividers (hand-placed standard cells), CP + A1, bias. **DRC and LVS clean per block** (KLayout DRC, netgen LVS). | **Sun Nov 22**: all Tier 1 blocks LVS-clean → Tier 2 go/no-go |
@@ -277,6 +278,12 @@ Run every row at tt_27C_3v3, ss_85C_3v0, ff_0C_3v6, sf and fs (and ss_125C_3v0 f
 - **Loop filter:** guard rings, and keep C1/C2 under fill-block layers.
 - **Standard cells:** hand-place them (there's no automatic place-and-route in the analog template). Use the 7-track `gf180mcu_fd_sc_mcu7t5v0` cells, which is what TT GF uses.
 - **Verify:** KLayout DRC with the PDK deck, matching precheck, at the e8daeda PDK version. Netgen LVS per block and top-level. Magic extraction for post-layout.
+- **Precheck rules learned from the dummy** (`tt-support-tools/precheck`):
+  - The LEF must list all 51 template pins with exactly the DEF rectangles (one rect each). It also needs VDPWR and VGND on Metal4, at least 0.8 µm wide, reaching within 10 µm of the top and bottom edges.
+  - Every LEF port needs a `Metal4_Label` (46/10) polygon covering it, drawn in the **top cell** (shapes in subcells don't count).
+  - Analog pin check: each used `ua` pin (`analog_pins: 2` means `ua[0]` and `ua[1]`) needs Metal4 or Via3 touching the 0.1–0.5 µm ring around the pin. Unused pins must have nothing there.
+  - `inv_1` and most logic cells have no well taps. Put a `filltie` in every row.
+  - Via1 can land on a 0.33 µm std-cell pin (0.03–0.035 µm side enclosure is legal when the line-end enclosure is ≥ 0.06 µm). Don't add an M1 pad there, because it breaks M1 spacing to the neighbouring pin.
 - **Known trap from TTGF0p3:** a project was disabled because its LEF didn't match its GDS (a missing VAPWR stripe). Generate the LEF from the final GDS every time.
 
 ---
@@ -346,7 +353,7 @@ Run every row at tt_27C_3v3, ss_85C_3v0, ff_0C_3v6, sf and fs (and ss_125C_3v0 f
 ## 12. Morning to-do (you)
 
 1. Read §0 and §11, and flag anything wrong.
-2. ~~Create the GitHub repo~~ Done Oct 27: public at <https://github.com/robertliu4/501-pll>. On the first push, `docs` passed and `gds` failed as expected because `gds/tt_um_robertliu4_pll.gds` doesn't exist yet. Precheck and the viewer were skipped. For the viewer to deploy later, set Settings → Pages → Source to "GitHub Actions".
+2. ~~Create the GitHub repo~~ Done Oct 27 (the dummy now passes precheck, see §0): public at <https://github.com/robertliu4/501-pll>. On the first push, `docs` passed and `gds` failed as expected because `gds/tt_um_robertliu4_pll.gds` doesn't exist yet. Precheck and the viewer were skipped. For the viewer to deploy later, set Settings → Pages → Source to "GitHub Actions".
 3. **Ask on TT Discord:**
    - Which board ships with TTGF26c, and are the analog pins routed?
    - Is MIM really unusable in GF tiles (no Metal5)?

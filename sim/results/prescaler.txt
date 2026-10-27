@@ -1,0 +1,33 @@
+TSPC /4 prescaler driven by the real starved ring (VCO freq, /4 output x4, divides correctly?)
+  tt_27C_3v3   Iref=  40uA nominal                     VCO    86.0 MHz  /4*4 =    86.0 MHz  OK
+  tt_27C_3v3   Iref=  40uA slow-silicon (+20 fF/stage) VCO     nan MHz  /4*4 =     nan MHz  FAIL
+  tt_27C_3v3   Iref= 110uA nominal                     VCO   277.5 MHz  /4*4 =   277.5 MHz  OK
+  tt_27C_3v3   Iref= 110uA slow-silicon (+20 fF/stage) VCO   148.1 MHz  /4*4 =   148.1 MHz  OK
+  tt_27C_3v3   Iref= 300uA nominal                     VCO   686.5 MHz  /4*4 =   686.5 MHz  OK
+  tt_27C_3v3   Iref= 300uA slow-silicon (+20 fF/stage) VCO   385.6 MHz  /4*4 =   385.6 MHz  OK
+  tt_27C_3v3   Iref= 600uA nominal                     VCO   953.1 MHz  /4*4 =   953.1 MHz  OK
+  tt_27C_3v3   Iref= 600uA slow-silicon (+20 fF/stage) VCO   562.3 MHz  /4*4 =   562.3 MHz  OK
+  ss_85C_3v0   Iref=  40uA nominal                     VCO   112.5 MHz  /4*4 =   112.5 MHz  OK
+  ss_85C_3v0   Iref=  40uA slow-silicon (+20 fF/stage) VCO     nan MHz  /4*4 =     nan MHz  FAIL
+  ss_85C_3v0   Iref= 110uA nominal                     VCO   309.8 MHz  /4*4 =   309.8 MHz  OK
+  ss_85C_3v0   Iref= 110uA slow-silicon (+20 fF/stage) VCO   168.6 MHz  /4*4 =   168.6 MHz  OK
+  ss_85C_3v0   Iref= 300uA nominal                     VCO   580.1 MHz  /4*4 =   580.1 MHz  OK
+  ss_85C_3v0   Iref= 300uA slow-silicon (+20 fF/stage) VCO   339.2 MHz  /4*4 =   339.2 MHz  OK
+  ss_85C_3v0   Iref= 600uA nominal                     VCO   693.1 MHz  /4*4 =   693.1 MHz  OK
+  ss_85C_3v0   Iref= 600uA slow-silicon (+20 fF/stage) VCO   416.1 MHz  /4*4 =   416.1 MHz  OK
+  ff_0C_3v6    Iref=  40uA nominal                     VCO     nan MHz  /4*4 =     nan MHz  FAIL
+  ff_0C_3v6    Iref=  40uA slow-silicon (+20 fF/stage) VCO     nan MHz  /4*4 =     nan MHz  FAIL
+  ff_0C_3v6    Iref= 110uA nominal                     VCO   213.4 MHz  /4*4 =   213.4 MHz  OK
+  ff_0C_3v6    Iref= 110uA slow-silicon (+20 fF/stage) VCO   119.0 MHz  /4*4 =   119.0 MHz  OK
+  ff_0C_3v6    Iref= 300uA nominal                     VCO   675.9 MHz  /4*4 =   675.9 MHz  OK
+  ff_0C_3v6    Iref= 300uA slow-silicon (+20 fF/stage) VCO   369.8 MHz  /4*4 =   369.8 MHz  OK
+  ff_0C_3v6    Iref= 600uA nominal                     VCO  1127.0 MHz  /4*4 =  1127.0 MHz  OK
+  ff_0C_3v6    Iref= 600uA slow-silicon (+20 fF/stage) VCO   648.3 MHz  /4*4 =   648.3 MHz  OK
+  ss_125C_3v0  Iref=  40uA nominal                     VCO   109.6 MHz  /4*4 =   109.6 MHz  OK
+  ss_125C_3v0  Iref=  40uA slow-silicon (+20 fF/stage) VCO     nan MHz  /4*4 =     nan MHz  FAIL
+  ss_125C_3v0  Iref= 110uA nominal                     VCO   303.5 MHz  /4*4 =   303.5 MHz  OK
+  ss_125C_3v0  Iref= 110uA slow-silicon (+20 fF/stage) VCO   166.2 MHz  /4*4 =   166.2 MHz  OK
+  ss_125C_3v0  Iref= 300uA nominal                     VCO   554.0 MHz  /4*4 =   554.0 MHz  OK
+  ss_125C_3v0  Iref= 300uA slow-silicon (+20 fF/stage) VCO   326.1 MHz  /4*4 =   326.1 MHz  OK
+  ss_125C_3v0  Iref= 600uA nominal                     VCO   652.7 MHz  /4*4 =   652.7 MHz  OK
+  ss_125C_3v0  Iref= 600uA slow-silicon (+20 fF/stage) VCO   393.3 MHz  /4*4 =   393.3 MHz  OK

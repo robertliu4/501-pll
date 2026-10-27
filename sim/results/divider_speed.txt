@@ -1,0 +1,9 @@
+max input frequency at which the divide-by-2 still toggles cleanly (MHz)
+  stdcell  tt_27C_3v3     1200   passes at: [200, 300, 400, 500, 600, 700, 800, 900, 1000, 1200]
+  stdcell  ss_85C_3v0      600   passes at: [200, 300, 400, 500, 600]
+  stdcell  ff_0C_3v6      1400   passes at: [200, 300, 400, 500, 600, 700, 800, 900, 1000, 1200, 1400]
+  stdcell  ss_125C_3v0     600   passes at: [200, 300, 400, 500, 600]
+  tspc     tt_27C_3v3     1400   passes at: [200, 300, 400, 500, 600, 700, 800, 900, 1000, 1200, 1400]
+  tspc     ss_85C_3v0     1400   passes at: [200, 300, 400, 500, 600, 700, 800, 900, 1000, 1200, 1400]
+  tspc     ff_0C_3v6      1400   passes at: [200, 300, 400, 500, 600, 700, 800, 900, 1000, 1200, 1400]
+  tspc     ss_125C_3v0    1400   passes at: [200, 300, 400, 500, 600, 700, 800, 900, 1000, 1200, 1400]

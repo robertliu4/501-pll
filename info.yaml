@@ -1,0 +1,66 @@
+# Tiny Tapeout project information
+project:
+  title:        "Integer-N charge-pump PLL"      # Project title
+  author:       "Robert Liu"      # Your name  (ASSUMPTION A8, check)
+  discord:      ""      # Your discord username, for communication and automatically assigning you a Tapeout role (optional)
+  description:  "25 MHz in, 300 MHz ring-VCO integer-N charge-pump PLL (N = 8/12/16) with an open-loop VCO test mode"
+  language:     "Analog" # other examples include Verilog, Amaranth, VHDL, etc
+  clock_hz:     25000000       # Reference frequency on clk
+
+  # How many tiles your design occupies? A single tile is about 340x160 uM.
+  tiles: "2x2"          # Valid values for analog projects: 1x2, 2x2, 3x2, 4x2
+
+  # How many analog pins does your project use?
+  analog_pins: 2        # Valid values: 0 to 6
+  uses_vapwr: false     # Set to true if your project uses the second analog power supply (VAPWR) in addition to VDPWR (3.3V)
+
+  # Your top module name must start with "tt_um_". Make it unique by including your github username:
+  top_module:  "tt_um_robertliu4_pll"
+
+  # List your project's source files here. Source files must be in ./src and you must list each source file separately, one per line:
+  source_files:        
+    - "project.v"
+
+# The pinout of your project. Leave unused pins blank. DO NOT delete or add any pins.
+# This section is for the datasheet/website. Use descriptive names (e.g., RX, TX, MOSI, SCL, SEG_A, etc.).
+pinout:
+  # Inputs
+  ui[0]: "N_SEL[0]"
+  ui[1]: "N_SEL[1]"
+  ui[2]: "OPEN_LOOP"
+  ui[3]: "ICP_SEL[0]"
+  ui[4]: "ICP_SEL[1]"
+  ui[5]: "VCO_BAND"
+  ui[6]: "REF_SEL"
+  ui[7]: "EXT_REF"
+
+  # Outputs
+  uo[0]: "VCO_DIV16"
+  uo[1]: "VCO_DIV64"
+  uo[2]: "FB_DIV"
+  uo[3]: "REF_OUT"
+  uo[4]: "LOCK"
+  uo[5]: ""
+  uo[6]: ""
+  uo[7]: ""
+
+  # Bidirectional pins
+  uio[0]: ""
+  uio[1]: ""
+  uio[2]: ""
+  uio[3]: ""
+  uio[4]: ""
+  uio[5]: ""
+  uio[6]: ""
+  uio[7]: ""
+
+  # Analog pins - make sure to also set "analog_pins" above, else the pins won't be connected
+  ua[0]: "VCTRL_EXT"
+  ua[1]: "VCTRL_MON"
+  ua[2]: ""
+  ua[3]: ""
+  ua[4]: ""
+  ua[5]: ""
+
+# Do not change!
+yaml_version: 6

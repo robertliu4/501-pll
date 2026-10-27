@@ -1,0 +1,13 @@
+Loop: I_cp=40uA R=21.8k C1=18.20p C2=1.41p t_rst=1.0ns, cold start Vctrl=0
+  tt_27C_3v3   lock time  2.60 us, final Vctrl 1.801 V, static phase error    0.0 ps
+  ss_85C_3v0   lock time  2.04 us, final Vctrl 1.607 V, static phase error    0.0 ps
+  ff_0C_3v6    lock time  2.68 us, final Vctrl 2.283 V, static phase error    0.0 ps
+  sf_27C_3v3   lock time  2.80 us, final Vctrl 1.934 V, static phase error    0.0 ps
+  fs_27C_3v3   lock time  2.40 us, final Vctrl 1.700 V, static phase error    0.0 ps
+
+Non-idealities at tt (starting already near lock):
+  mismatch  0.0%  leak   0.0 nA: static offset     0.0 ps (predicted dI/I*t_rst =   0.0 ps), ripple@f_ref  0.000 mV -> ref spur ~ -212.7 dBc at the VCO, -236.8 dBc after /16
+  mismatch  5.0%  leak   0.0 nA: static offset    50.0 ps (predicted dI/I*t_rst =  50.0 ps), ripple@f_ref  0.032 mV -> ref spur ~  -80.9 dBc at the VCO, -105.0 dBc after /16
+  mismatch 10.0%  leak   0.0 nA: static offset   100.0 ps (predicted dI/I*t_rst = 100.0 ps), ripple@f_ref  0.068 mV -> ref spur ~  -74.4 dBc at the VCO,  -98.5 dBc after /16
+  mismatch  0.0%  leak   1.0 nA: static offset     1.0 ps (predicted dI/I*t_rst =   0.0 ps), ripple@f_ref  0.009 mV -> ref spur ~  -92.1 dBc at the VCO, -116.2 dBc after /16
+  mismatch  0.0%  leak  10.0 nA: static offset    10.0 ps (predicted dI/I*t_rst =   0.0 ps), ripple@f_ref  0.089 mV -> ref spur ~  -72.1 dBc at the VCO,  -96.2 dBc after /16

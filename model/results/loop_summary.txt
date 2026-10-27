@@ -1,0 +1,24 @@
+I_cp trade-off (f_c = 1.5 MHz, PM = 60 deg, K_vco = 140 MHz/V, N = 12)
+  I_cp   Ctot     C1      C2      R       area@4fF/um2  I*R step   R noise
+    10u    4.9p   4.55p   0.35p   87.0k      1232 um2    0.87 V    38.0 nV/rtHz
+    20u    9.8p   9.10p   0.70p   43.5k      2463 um2    0.87 V    26.9 nV/rtHz
+    40u   19.6p  18.20p   1.41p   21.8k      4926 um2    0.87 V    19.0 nV/rtHz
+    80u   39.2p  36.40p   2.82p   10.9k      9853 um2    0.87 V    13.4 nV/rtHz
+
+Chosen: I_cp = 40 uA -> R = 21.8 kOhm, C1 = 18.20 pF, C2 = 1.41 pF (b = 13.9)
+  zero 402 kHz, pole 5.60 MHz, area 4926 um2 of MOS cap (2.1% of a 2x2 tile, 711x325 um)
+
+Robustness (I_cp*K_vco product scaled):
+  x0.5  f_c =  0.83 MHz (f_ref/30.3)  PM =  55.6 deg
+  x0.7  f_c =  1.10 MHz (f_ref/22.8)  PM =  58.8 deg
+  x1.0  f_c =  1.50 MHz (f_ref/16.7)  PM =  60.0 deg
+  x1.4  f_c =  2.01 MHz (f_ref/12.4)  PM =  58.9 deg
+  x2.0  f_c =  2.73 MHz (f_ref/ 9.2)  PM =  55.6 deg
+
+Jitter budget (integrated 1 kHz .. f_ref/2), assumptions: ring FOM -157 dBc/Hz, 0.36 mW, 1/f^3 corner 500 kHz, reference floor -130 dBc/Hz, CP gm/ID = 8
+  VCO              7.28 ps rms
+  Reference        5.10 ps rms
+  Charge pump      0.92 ps rms
+  Loop-filter R    1.39 ps rms
+  Total            9.04 ps rms
+  total L(1 MHz) = -102.0 dBc/Hz; free-running VCO alone at 1 MHz = -101.3 dBc/Hz

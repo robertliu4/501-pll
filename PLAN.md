@@ -18,6 +18,8 @@ Written overnight on Oct 26–27 from the design discussion in the "Mos" chat, t
   - First divider stage: standard-cell DFF against a custom TSPC stage.
   - TSPC ÷4 prescaler driven by the real ring, including a "silicon 2× slow" case.
   - MOS-cap density, for the loop filter.
+  - Charge-pump up/down matching window vs Vctrl, simple vs cascoded sources.
+  - Beta-multiplier bias reference spread across corners, temperature and supply.
   - Loop design with the real K_VCO: R/C values, phase margin, I_cp trade-off and a jitter budget.
   - Behavioural closed-loop lock from a cold start at all 5 corners, using the simulated VCO curves.
 
@@ -89,7 +91,8 @@ Written overnight on Oct 26–27 from the design discussion in the "Mos" chat, t
 | Speed headroom | Starve devices fully on: 1.36 GHz tt, **0.92 GHz ss/85 °C/3.0 V**, which is more than 2× above 455 MHz | |
 | Prescaler | 2 × TSPC ÷2 (3.3 V devices), driven from the ring through 2 inverters | `04_prescaler.py` |
 | PFD | std-cell `dffrnq_1` ×2, `buf_2` ×2, `nand2`, `dly*` reset chain; t_rst ≈ 1 ns (set by the dead-zone sim); U5 inverter + U6 TG for UP/DN matching | chat |
-| Charge pump | current-steering with unity-gain buffer A1 (architecture d), cascoded sources, **I_cp = 40 µA** | chat + `loop_design.py` |
+| Charge pump | current-steering with unity-gain buffer A1 (architecture d), cascoded sources, **I_cp = 40 µA**; ≤ 2 % mismatch over 0.44–2.57 V (worst corner) | chat + `loop_design.py` + `06_cp_window.py` |
+| Bias | beta multiplier, 10 µA (×4 → I_cp), R ≈ 7.9 kΩ `ppolyf_u_1k`; −12 / +29 % over PVT | `07_bias.py` |
 | Loop filter | **R = 21.8 kΩ** (`ppolyf_u_1k`, about 22 squares), **C1 = 18.2 pF**, **C2 = 1.41 pF** (MOS caps); f_c = 1.5 MHz (f_ref/17), PM 60° (55.6° at ×0.5 and ×2) | `loop_design.py` |
 | Lock time | 2.0–2.8 µs from a cold start, all corners (behavioural) | `pll_tran.py` |
 | Jitter budget | about 9 ps rms (VCO 7.3, reference 5.1, R 1.4, CP 0.9) from **assumed** source levels [A4] | `noise_budget.png` |
@@ -113,6 +116,11 @@ Each block lists the decision, why, what was rejected, and the fallback.
 - **Now:** NMOS M1 (20/1 µm) with degeneration R_s = 15.2 kΩ, plus a floor current I0 = 59 µA so the VCO always starts. Both are still ideal in simulation.
 - **Missing piece the chat never covered: where the bias currents come from.** I_cp, I0 and the A1 tail all need a reference.
   - **Recommendation:** a constant-gm (beta-multiplier) reference with a startup circuit, built from `ppolyf_u_1k`. Its ±20–30 % spread is fine because the loop tolerates 0.5–2× changes in I_cp·K_VCO.
+  - **Simulated** (`07_bias.py`, `sim/results/bias.txt`):
+    - Sizing: M1 10/2 µm, K = 4, R ≈ 7.9 squares of `ppolyf_u_1k` (2 × 15.8 µm). That gives **10.0 µA** at tt.
+    - Spread: −1.5 % at ss/85 °C, **+22 %** at ff/0 °C, −12 % at 0 °C, **+29 %** at 85 °C, and ±2 % from 3.0 to 3.6 V.
+    - Still to check in W2: the ff/85 °C combination, and the startup circuit with a VDD ramp.
+    - I_cp ∝ 1/R² from the bias and the loop-filter R are the same poly, so the crossover moves roughly as 1/R². That's 0.7–1.6× over the ±20 % sheet-resistance range, inside the tolerance.
   - **Rejected:** an off-chip resistor or current on an analog pin. Analog-pin access is uncertain (finding 5).
 - **Silicon insurance (Tier 2):** a VCO_BAND bit that adds about +50 % to I0, and an ICP_SEL[1:0] trim (×0.5, ×1, ×1.5, ×2). Both are a few switched mirror legs.
 
@@ -135,6 +143,11 @@ Each block lists the decision, why, what was rejected, and the fallback.
   - The lock window is only **1.6–2.3 V** (N = 12, all corners).
   - A1 only needs an input/output range of about 1.2–2.8 V, so a **plain NMOS-input 5-transistor OTA follower** is enough; no rail-to-rail needed.
   - The bottom of the range is naturally limited by the NMOS V-to-I converter anyway.
+- **Simulated output window** (`06_cp_window.py`, `sim/results/cp_window.png`). Setup: 40 µA, sources L = 1 µm at gm/ID ≈ 8, cascodes L = 0.5 µm, wide-swing cascode bias, switches on.
+  - **Cascoded:** |I_up − I_dn| < 2 % over **0.44–2.57 V at the worst corner (ss)**, and about 0.35–2.9 V elsewhere. That covers the 1.61–2.28 V lock range with margin.
+  - **Simple long-L mirrors:** only < 5 %. At 2 % the window is 0.7–2.0 V, which misses the lock range.
+  - So **keep the cascodes**, and A1 needs about 1.2–2.6 V of range.
+  - This was with ideal, identical up/down references. The real PMOS reference comes from an NMOS mirror leg, and that ratio error adds a constant offset (Monte Carlo in W3).
 - **Behavioural check:**
   - 5 % up/down mismatch gives a 50 ps static offset (matches ΔI/I·t_rst exactly), 0.03 mV of ripple at f_ref, and about −81 dBc spurs at the VCO (−105 dBc after ÷16).
   - 10 nA of leakage gives about −72 dBc.
@@ -356,6 +369,8 @@ sim/ngspice/             ngspice decks generated from Python (GF180 models via c
   03_divider_speed.py    std-cell DFF vs TSPC divide-by-2
   04_prescaler.py        TSPC /4 driven by the real ring
   05_moscap.py           MOS cap C-V
+  06_cp_window.py        CP up/down matching vs Vctrl, simple vs cascoded
+  07_bias.py             beta-multiplier reference spread over PVT
 sim/results/             plots and tables
 model/
   loop_design.py         loop filter values, Bode, robustness, noise budget

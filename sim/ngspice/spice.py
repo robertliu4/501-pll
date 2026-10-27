@@ -45,6 +45,10 @@ def models(corner="typical", mim=True, res=True, stdcells=False):
 
 def run(name, deck, timeout=3600):
     OUT.mkdir(exist_ok=True)
+    # ngspice reads .spiceinit from the working directory, which is OUT
+    init = OUT / ".spiceinit"
+    if not init.exists():
+        init.write_text((HERE / ".spiceinit").read_text())
     cir = OUT / f"{name}.cir"
     cir.write_text(deck)
     proc = subprocess.run(["ngspice", "-b", cir.name], cwd=OUT, capture_output=True,

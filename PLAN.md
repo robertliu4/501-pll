@@ -22,7 +22,7 @@ Written overnight on Oct 26–27 from the design discussion in the "Mos" chat, t
   - Beta-multiplier bias reference spread across corners, temperature and supply.
   - Loop design with the real K_VCO: R/C values, phase margin, I_cp trade-off and a jitter budget.
   - Behavioural closed-loop lock from a cold start at all 5 corners, using the simulated VCO curves.
-- **The dummy tile passes the full TT precheck in CI (Oct 27).** `layout/make_dummy_gds.py` draws the template pins, the VDPWR/VGND stripes and one std-cell inverter wired `ua[0]` → I, ZN → `ua[1]`. All 12 checks are green, including GF180MCU DRC and antenna ([run 40534489155](https://github.com/robertliu4/501-pll/actions/runs/40534489155)). The `viewer` job fails until GitHub Pages is enabled (§12).
+- **The dummy tile passes the full TT precheck in CI (Oct 27).** `layout/make_dummy_gds.py` draws the template pins, the VDPWR/VGND stripes and one std-cell inverter wired `ua[0]` → I, ZN → `ua[1]`. All 12 checks are green, including GF180MCU DRC and antenna ([run 40534489155](https://github.com/robertliu4/501-pll/actions/runs/40534489155)). GitHub Pages is on, and the 3D layout viewer is at <https://robertliu4.github.io/501-pll/>.
 
 **Findings that changed the earlier plan**
 
@@ -353,7 +353,7 @@ Run every row at tt_27C_3v3, ss_85C_3v0, ff_0C_3v6, sf and fs (and ss_125C_3v0 f
 ## 12. Morning to-do (you)
 
 1. Read §0 and §11, and flag anything wrong.
-2. ~~Create the GitHub repo~~ Done Oct 27 (the dummy now passes precheck, see §0): public at <https://github.com/robertliu4/501-pll>. On the first push, `docs` passed and `gds` failed as expected because `gds/tt_um_robertliu4_pll.gds` doesn't exist yet. Precheck and the viewer were skipped. For the viewer to deploy later, set Settings → Pages → Source to "GitHub Actions".
+2. ~~Create the GitHub repo~~ Done Oct 27 (the dummy now passes precheck, see §0): public at <https://github.com/robertliu4/501-pll>. On the first push, `docs` passed and `gds` failed as expected because `gds/tt_um_robertliu4_pll.gds` doesn't exist yet. Precheck and the viewer were skipped. Pages was enabled with source "GitHub Actions" on Oct 27; the viewer deploys on every push.
 3. **Ask on TT Discord:**
    - Which board ships with TTGF26c, and are the analog pins routed?
    - Is MIM really unusable in GF tiles (no Metal5)?

@@ -361,7 +361,9 @@ Run every row at tt_27C_3v3, ss_85C_3v0, ff_0C_3v6, sf and fs (and ss_125C_3v0 f
 ```
 PLAN.md                  this file
 info.yaml, src/, docs/   Tiny Tapeout template (draft pinout filled in)
-.github/workflows/       TT GDS + precheck + docs actions (@ttgf26c). They will fail until gds/ and lef/ exist.
+.github/workflows/       TT GDS + precheck + docs actions (@ttgf26c), run on every push
+layout/                  make_dummy_gds.py (dummy tile: template pins, stripes, one inverter) + tt_analog_2x2.def
+gds/, lef/               what the TT action submits; currently the dummy from layout/make_dummy_gds.py
 sim/ngspice/             ngspice decks generated from Python (GF180 models via ciel)
   spice.py               model includes, corners, runner
   01_devices.py          gm/ID, Vth

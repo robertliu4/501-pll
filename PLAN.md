@@ -10,7 +10,7 @@ Written overnight on Oct 26–27 from the design discussion in the "Mos" chat, t
 
 **Done tonight**
 
-- Git repo with the TT GF analog template merged in (`info.yaml`, `src/project.v`, `docs/info.md`, GitHub Actions), plus `sim/` and `model/`.
+- Git repo with the TT GF analog template merged in (`info.yaml`, `src/project.v`, `docs/info.md`, GitHub Actions), plus `sim/` and `model/`. Pushed to <https://github.com/robertliu4/501-pll> (public), where the TT Actions run on every push.
 - Local tools: ngspice 47 (Homebrew), the gf180mcuD PDK via `ciel` (open_pdks 792ef67) and a Python venv.
 - Simulations on real GF180 models, with results in `sim/results/` and `model/results/`:
   - 3.3 V device characterization: Vth and gm/ID charts.
@@ -346,7 +346,7 @@ Run every row at tt_27C_3v3, ss_85C_3v0, ff_0C_3v6, sf and fs (and ss_125C_3v0 f
 ## 12. Morning to-do (you)
 
 1. Read §0 and §11, and flag anything wrong.
-2. Decide whether to create the GitHub repo (it must be **public** for TT submission, I believe; please confirm). Then `git remote add origin … && git push`.
+2. ~~Create the GitHub repo~~ Done Oct 27: public at <https://github.com/robertliu4/501-pll>. On the first push, `docs` passed and `gds` failed as expected because `gds/tt_um_robertliu4_pll.gds` doesn't exist yet. Precheck and the viewer were skipped. For the viewer to deploy later, set Settings → Pages → Source to "GitHub Actions".
 3. **Ask on TT Discord:**
    - Which board ships with TTGF26c, and are the analog pins routed?
    - Is MIM really unusable in GF tiles (no Metal5)?
